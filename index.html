@@ -3,220 +3,281 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mega Quiz de Ciencias e Historia - Javier Martínez</title>
+    <title>Hiper Super Ultra Desafío Académico - Javier Martínez</title>
     <style>
         :root {
-            --primary: #2c3e50;
-            --secondary: #3498db;
-            --success: #27ae60;
-            --danger: #e74c3c;
-            --light: #f4f7f6;
-            --text-muted: #7f8c8d;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --physics: #f39c12;
+            --chemistry: #e74c3c;
+            --biology: #2ecc71;
+            --geography: #3498db;
+            --history: #9b59b6;
+            --white: #ffffff;
         }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: var(--light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-gradient);
+            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
-            padding: 15px;
+            color: #333;
         }
 
-        #quiz-container {
-            background: white;
-            padding: 2rem;
+        .card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        /* Pantallas */
+        #quiz-screen, #result-screen { display: none; }
+
+        h1 { color: #2c3e50; font-size: 2rem; margin-bottom: 10px; }
+        p.subtitle { color: #7f8c8d; margin-bottom: 30px; }
+
+        .btn-start {
+            background: #764ba2;
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn-start:hover { transform: scale(1.05); background: #667eea; }
+
+        /* Categorías y Progreso */
+        .badge {
+            display: inline-block;
+            padding: 5px 15px;
             border-radius: 15px;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #eee;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        #progress-fill {
+            height: 100%;
+            background: #764ba2;
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        /* Inputs y Botones de respuesta */
+        .btn-option {
             width: 100%;
-            max-width: 600px;
+            padding: 12px;
+            margin: 8px 0;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+
+        .btn-option:hover { border-color: #764ba2; background: #f9f9f9; }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin: 15px 0;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            box-sizing: border-box;
+            font-size: 1.1rem;
             text-align: center;
         }
 
-        .category-badge {
-            background: var(--secondary);
+        .correct { background: #2ecc71 !important; color: white; border-color: #2ecc71; }
+        .wrong { background: #e74c3c !important; color: white; border-color: #e74c3c; }
+
+        #next-btn, #check-btn {
+            background: #2c3e50;
             color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-
-        h2 { color: var(--primary); margin: 20px 0; font-size: 1.25rem; line-height: 1.4; min-height: 3em; display: flex; align-items: center; justify-content: center;}
-
-        .btn-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 10px; }
-
-        .btn {
-            padding: 12px;
-            border: 2px solid #ecf0f1;
-            background: #fff;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.95rem;
-            transition: all 0.2s ease;
-            color: var(--primary);
-        }
-
-        .btn:hover:not([disabled]) { border-color: var(--secondary); background: #f0f7ff; }
-        .correct { background: var(--success) !important; color: white; border-color: var(--success); }
-        .wrong { background: var(--danger) !important; color: white; border-color: var(--danger); }
-
-        #next-btn {
-            margin-top: 25px;
-            padding: 12px;
-            background: var(--primary);
-            color: white;
+            padding: 12px 30px;
             border: none;
             border-radius: 8px;
+            margin-top: 20px;
             cursor: pointer;
-            display: none;
             width: 100%;
             font-size: 1rem;
-            font-weight: bold;
         }
 
-        .progress-text { margin-bottom: 10px; font-size: 0.8rem; color: var(--text-muted); }
-
         .credits {
-            margin-top: 30px;
-            padding-top: 15px;
+            margin-top: 25px;
+            font-size: 0.85rem;
+            color: #95a5a6;
             border-top: 1px solid #eee;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            font-weight: 500;
+            padding-top: 15px;
         }
     </style>
 </head>
 <body>
 
-<div id="quiz-container">
-    <div id="quiz-content">
-        <div class="progress-text" id="progress">Pregunta 1 de 20</div>
-        <span id="category" class="category-badge">Materia</span>
-        <h2 id="question">Cargando...</h2>
-        <div id="answer-buttons" class="btn-grid"></div>
-        <button id="next-btn">Siguiente Pregunta</button>
+    <div id="start-screen" class="card">
+        <h1>🚀 Super Quiz</h1>
+        <p class="subtitle">Pon a prueba tu mente en Ciencias e Historia</p>
+        <button class="btn-start" onclick="startQuiz()">¡Empezar ahora!</button>
+        <div class="credits">Elaborado por Javier Martinez 3er Año C</div>
     </div>
-    
-    <div class="credits">
-        Elaborado por Javier Martinez 3er Año C
+
+    <div id="quiz-screen" class="card">
+        <div class="progress-bar"><div id="progress-fill"></div></div>
+        <div id="badge" class="badge">Materia</div>
+        <h2 id="question-text">Pregunta aquí</h2>
+        
+        <div id="answer-area">
+            </div>
+
+        <button id="check-btn" onclick="handleAction()">Comprobar</button>
+        <button id="next-btn" style="display:none" onclick="nextQuestion()">Siguiente →</button>
+        
+        <div class="credits">Javier Martinez 3er Año C</div>
     </div>
-</div>
+
+    <div id="result-screen" class="card">
+        <h1>¡Terminado!</h1>
+        <p id="final-score" style="font-size: 1.5rem; font-weight: bold;"></p>
+        <button class="btn-start" onclick="location.reload()">Reiniciar</button>
+        <div class="credits">Elaborado por Javier Martinez 3er Año C</div>
+    </div>
 
 <script>
     const questions = [
-        // --- FÍSICA ---
-        { category: "Física", question: "¿Qué partícula del átomo tiene carga eléctrica negativa?", answers: [{ text: "Protón", correct: false }, { text: "Neutrón", correct: false }, { text: "Electrón", correct: true }, { text: "Positrón", correct: false }] },
-        { category: "Física", question: "¿Cuál es la velocidad de la luz en el vacío aproximadamente?", answers: [{ text: "300,000 km/s", correct: true }, { text: "150,000 km/s", correct: false }, { text: "1,000 km/s", correct: false }, { text: "340 m/s", correct: false }] },
-        { category: "Física", question: "Según la segunda ley de Newton, la fuerza es igual a la masa multiplicada por la...", answers: [{ text: "Velocidad", correct: false }, { text: "Aceleración", correct: true }, { text: "Gravedad", correct: false }, { text: "Energía", correct: false }] },
-        { category: "Física", question: "¿Qué tipo de energía posee un objeto debido a su movimiento?", answers: [{ text: "Potencial", correct: false }, { text: "Cinética", correct: true }, { text: "Térmica", correct: false }, { text: "Química", correct: false }] },
+        // FÍSICA
+        { type: "select", cat: "Física", color: "var(--physics)", q: "¿Cuál es la unidad de fuerza en el S.I.?", options: ["Joule", "Newton", "Watt", "Pascal"], correct: "Newton" },
+        { type: "input", cat: "Física", color: "var(--physics)", q: "Escribe el símbolo químico del Oro:", correct: "Au" },
+        
+        // QUÍMICA
+        { type: "select", cat: "Química", color: "var(--chemistry)", q: "¿Qué pH se considera neutro?", options: ["0", "1", "7", "14"], correct: "7" },
+        { type: "input", cat: "Química", color: "var(--chemistry)", q: "Escribe la fórmula química del Agua:", correct: "H2O" },
 
-        // --- QUÍMICA ---
-        { category: "Química", question: "¿Cuál es el símbolo químico del Oro?", answers: [{ text: "Ag", correct: false }, { text: "Fe", correct: false }, { text: "Au", correct: true }, { text: "Or", correct: false }] },
-        { category: "Química", question: "¿Cuál es el pH de una sustancia neutra como el agua pura?", answers: [{ text: "0", correct: false }, { text: "14", correct: false }, { text: "7", correct: true }, { text: "1", correct: false }] },
-        { category: "Química", question: "¿Qué gas es esencial para que ocurra la combustión (fuego)?", answers: [{ text: "Nitrógeno", correct: false }, { text: "Hidrógeno", correct: false }, { text: "Oxígeno", correct: true }, { text: "Dióxido de carbono", correct: false }] },
-        { category: "Química", question: "¿Cómo se llaman las filas horizontales en la tabla periódica?", answers: [{ text: "Grupos", correct: false }, { text: "Periodos", correct: true }, { text: "Familias", correct: false }, { text: "Valencias", correct: false }] },
+        // BIOLOGÍA
+        { type: "select", cat: "Biología", color: "var(--biology)", q: "¿Qué órgano bombea la sangre?", options: ["Cerebro", "Pulmón", "Corazón", "Hígado"], correct: "Corazón" },
+        { type: "input", cat: "Biología", color: "var(--biology)", q: "¿Cómo se llama el pigmento verde de las plantas?", correct: "Clorofila" },
 
-        // --- BIOLOGÍA ---
-        { category: "Biología", question: "¿Qué parte de la célula contiene el material genético (ADN)?", answers: [{ text: "Citoplasma", correct: false }, { text: "Núcleo", correct: true }, { text: "Membrana", correct: false }, { text: "Lisosoma", correct: false }] },
-        { category: "Biología", question: "¿Cómo se llama el proceso por el cual las plantas fabrican su propio alimento?", answers: [{ text: "Respiración", correct: false }, { text: "Fotosíntesis", correct: true }, { text: "Ósmosis", correct: false }, { text: "Mitosis", correct: false }] },
-        { category: "Biología", question: "¿Cuál es el hueso más largo del cuerpo humano?", answers: [{ text: "Húmero", correct: false }, { text: "Radio", correct: false }, { text: "Fémur", correct: true }, { text: "Tibia", correct: false }] },
-        { category: "Biología", question: "¿Cuál es el órgano más grande del cuerpo humano?", answers: [{ text: "Hígado", correct: false }, { text: "Cerebro", correct: false }, { text: "Piel", correct: true }, { text: "Pulmones", correct: false }] },
+        // GEOGRAFÍA
+        { type: "select", cat: "Geografía", color: "var(--geography)", q: "¿Cuál es el continente más grande?", options: ["América", "África", "Asia", "Europa"], correct: "Asia" },
+        { type: "input", cat: "Geografía", color: "var(--geography)", q: "¿En qué país están las pirámides de Giza?", correct: "Egipto" },
 
-        // --- GEOGRAFÍA ---
-        { category: "Geografía", question: "¿Cuál es el río más largo y caudaloso del mundo?", answers: [{ text: "Nilo", correct: false }, { text: "Amazonas", correct: true }, { text: "Misisipi", correct: false }, { text: "Yangtsé", correct: false }] },
-        { category: "Geografía", question: "¿En qué continente se encuentra el desierto del Sahara?", answers: [{ text: "Asia", correct: false }, { text: "América", correct: false }, { text: "África", correct: true }, { text: "Oceanía", correct: false }] },
-        { category: "Geografía", question: "¿Cuál es el océano más grande del planeta?", answers: [{ text: "Atlántico", correct: false }, { text: "Índico", correct: false }, { text: "Pacífico", correct: true }, { text: "Ártico", correct: false }] },
-        { category: "Geografía", question: "¿Qué línea imaginaria divide la Tierra en Hemisferio Norte y Sur?", answers: [{ text: "Meridiano de Greenwich", correct: false }, { text: "Trópico de Cáncer", correct: false }, { text: "Ecuador", correct: true }, { text: "Círculo Polar", correct: false }] },
-
-        // --- HISTORIA ---
-        { category: "Historia", question: "¿En qué año llegó Cristóbal Colón a América?", answers: [{ text: "1492", correct: true }, { text: "1500", correct: false }, { text: "1453", correct: false }, { text: "1789", correct: false }] },
-        { category: "Historia", question: "¿En qué país comenzó la Revolución Industrial?", answers: [{ text: "Francia", correct: false }, { text: "Estados Unidos", correct: false }, { text: "Inglaterra", correct: true }, { text: "Alemania", correct: false }] },
-        { category: "Historia", question: "¿Quién fue el principal líder de la Revolución Francesa que instauró el 'Régimen del Terror'?", answers: [{ text: "Napoleón", correct: false }, { text: "Robespierre", correct: true }, { text: "Luis XVI", correct: false }, { text: "Rousseau", correct: false }] },
-        { category: "Historia", question: "¿Qué civilización construyó las pirámides de Giza?", answers: [{ text: "Mayas", correct: false }, { text: "Romanos", correct: false }, { text: "Egipcios", correct: true }, { text: "Griegos", correct: false }] }
+        // HISTORIA
+        { type: "select", cat: "Historia", color: "var(--history)", q: "¿En qué año se descubrió América?", options: ["1492", "1789", "1914", "1500"], correct: "1492" },
+        { type: "input", cat: "Historia", color: "var(--history)", q: "¿Cómo se apellidaba el líder de la Alemania Nazi?", correct: "Hitler" }
     ];
 
-    const questionElement = document.getElementById('question');
-    const categoryElement = document.getElementById('category');
-    const answerButtonsElement = document.getElementById('answer-buttons');
-    const nextButton = document.getElementById('next-btn');
-    const progressElement = document.getElementById('progress');
-
-    let currentQuestionIndex = 0;
+    let currentIdx = 0;
     let score = 0;
 
     function startQuiz() {
-        currentQuestionIndex = 0;
-        score = 0;
+        document.getElementById('start-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'block';
         showQuestion();
     }
 
     function showQuestion() {
-        resetState();
-        let q = questions[currentQuestionIndex];
-        progressElement.innerText = `Pregunta ${currentQuestionIndex + 1} de ${questions.length}`;
-        categoryElement.innerText = q.category;
-        questionElement.innerText = q.question;
+        const q = questions[currentIdx];
+        const area = document.getElementById('answer-area');
+        const badge = document.getElementById('badge');
+        
+        document.getElementById('question-text').innerText = q.q;
+        document.getElementById('next-btn').style.display = 'none';
+        document.getElementById('check-btn').style.display = 'block';
+        badge.innerText = q.cat;
+        badge.style.background = q.color;
+        
+        // Actualizar barra
+        document.getElementById('progress-fill').style.width = ((currentIdx) / questions.length * 100) + "%";
 
-        q.answers.sort(() => Math.random() - 0.5).forEach(answer => {
-            const button = document.createElement('button');
-            button.innerText = answer.text;
-            button.classList.add('btn');
-            if (answer.correct) button.dataset.correct = "true";
-            button.addEventListener('click', selectAnswer);
-            answerButtonsElement.appendChild(button);
-        });
-    }
-
-    function resetState() {
-        nextButton.style.display = 'none';
-        while (answerButtonsElement.firstChild) {
-            answerButtonsElement.removeChild(answerButtonsElement.firstChild);
+        area.innerHTML = '';
+        if(q.type === "select") {
+            q.options.forEach(opt => {
+                area.innerHTML += `<button class="btn-option" onclick="selectOption(this)">${opt}</button>`;
+            });
+            document.getElementById('check-btn').style.display = 'none'; // Se comprueba al hacer clic en la opción
+        } else {
+            area.innerHTML = `<input type="text" id="user-input" placeholder="Escribe tu respuesta aquí...">`;
         }
     }
 
-    function selectAnswer(e) {
-        const selectedBtn = e.target;
-        const isCorrect = selectedBtn.dataset.correct === "true";
-        if (isCorrect) {
-            selectedBtn.classList.add('correct');
+    function selectOption(btn) {
+        const q = questions[currentIdx];
+        if(btn.innerText === q.correct) {
+            btn.classList.add('correct');
             score++;
         } else {
-            selectedBtn.classList.add('wrong');
+            btn.classList.add('wrong');
+            // Mostrar la correcta
+            Array.from(document.getElementsByClassName('btn-option')).forEach(b => {
+                if(b.innerText === q.correct) b.classList.add('correct');
+            });
         }
-        Array.from(answerButtonsElement.children).forEach(button => {
-            if (button.dataset.correct === "true") button.classList.add('correct');
-            button.disabled = true;
-        });
-        nextButton.style.display = 'block';
+        disableOptions();
+        showNext();
     }
 
-    nextButton.addEventListener('click', () => {
-        currentQuestionIndex++;
-        if (currentQuestionIndex < questions.length) {
+    function handleAction() {
+        const q = questions[currentIdx];
+        const input = document.getElementById('user-input');
+        if(!input) return;
+
+        const userAns = input.value.trim().toLowerCase();
+        const correctAns = q.correct.toLowerCase();
+
+        if(userAns === correctAns) {
+            input.classList.add('correct');
+            score++;
+        } else {
+            input.classList.add('wrong');
+            input.value = `Error. Era: ${q.correct}`;
+        }
+        input.disabled = true;
+        showNext();
+    }
+
+    function disableOptions() {
+        Array.from(document.getElementsByClassName('btn-option')).forEach(b => b.disabled = true);
+    }
+
+    function showNext() {
+        document.getElementById('check-btn').style.display = 'none';
+        document.getElementById('next-btn').style.display = 'block';
+    }
+
+    function nextQuestion() {
+        currentIdx++;
+        if(currentIdx < questions.length) {
             showQuestion();
         } else {
-            showScore();
+            showResults();
         }
-    });
-
-    function showScore() {
-        resetState();
-        progressElement.innerText = "¡Cuestionario finalizado!";
-        categoryElement.style.display = "none";
-        let mensaje = score > 15 ? "¡Excelente trabajo!" : "¡Buen intento!";
-        questionElement.innerHTML = `<div>${mensaje}</div>Obtuviste ${score} de ${questions.length} puntos.`;
-        nextButton.innerText = "Reiniciar Cuestionario";
-        nextButton.style.display = "block";
-        nextButton.onclick = () => location.reload();
     }
 
-    startQuiz();
+    function showResults() {
+        document.getElementById('quiz-screen').style.display = 'none';
+        document.getElementById('result-screen').style.display = 'block';
+        document.getElementById('final-score').innerText = `Puntaje: ${score} de ${questions.length}`;
+    }
 </script>
-
 </body>
 </html>
-
