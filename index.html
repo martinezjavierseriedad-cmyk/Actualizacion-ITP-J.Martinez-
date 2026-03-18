@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hiper Super Ultra Desafío Académico - Javier Martínez</title>
+    <title>Super Desafío Académico - Javier Martínez</title>
     <style>
         :root {
             --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -34,56 +34,26 @@
             width: 90%;
             max-width: 500px;
             text-align: center;
-            transition: all 0.3s ease;
         }
 
-        /* Pantallas */
         #quiz-screen, #result-screen { display: none; }
 
-        h1 { color: #2c3e50; font-size: 2rem; margin-bottom: 10px; }
-        p.subtitle { color: #7f8c8d; margin-bottom: 30px; }
-
-        .btn-start {
+        h1 { color: #2c3e50; font-size: 1.8rem; margin-bottom: 10px; }
+        
+        .btn-start, .btn-action {
             background: #764ba2;
             color: white;
             padding: 15px 40px;
             border: none;
             border-radius: 50px;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: transform 0.2s, background 0.3s;
+            margin-top: 20px;
         }
 
-        .btn-start:hover { transform: scale(1.05); background: #667eea; }
+        .btn-start:hover { transform: scale(1.05); background: #5a3a8a; }
 
-        /* Categorías y Progreso */
-        .badge {
-            display: inline-block;
-            padding: 5px 15px;
-            border-radius: 15px;
-            color: white;
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            margin-bottom: 15px;
-        }
-
-        .progress-bar {
-            height: 8px;
-            background: #eee;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-
-        #progress-fill {
-            height: 100%;
-            background: #764ba2;
-            width: 0%;
-            transition: width 0.3s;
-        }
-
-        /* Inputs y Botones de respuesta */
         .btn-option {
             width: 100%;
             padding: 12px;
@@ -92,98 +62,47 @@
             border-radius: 10px;
             background: white;
             cursor: pointer;
-            font-size: 1rem;
             transition: 0.2s;
         }
 
         .btn-option:hover { border-color: #764ba2; background: #f9f9f9; }
+        .correct { background: #2ecc71 !important; color: white; border-color: #2ecc71 !important; }
+        .wrong { background: #e74c3c !important; color: white; border-color: #e74c3c !important; }
 
-        input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            margin: 15px 0;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            box-sizing: border-box;
-            font-size: 1.1rem;
-            text-align: center;
-        }
-
-        .correct { background: #2ecc71 !important; color: white; border-color: #2ecc71; }
-        .wrong { background: #e74c3c !important; color: white; border-color: #e74c3c; }
-
-        #next-btn, #check-btn {
-            background: #2c3e50;
-            color: white;
-            padding: 12px 30px;
-            border: none;
-            border-radius: 8px;
-            margin-top: 20px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 1rem;
-        }
-
-        .credits {
-            margin-top: 25px;
-            font-size: 0.85rem;
-            color: #95a5a6;
-            border-top: 1px solid #eee;
-            padding-top: 15px;
-        }
+        .progress-bar { height: 8px; background: #eee; border-radius: 10px; margin: 20px 0; }
+        #progress-fill { height: 100%; background: #764ba2; width: 0%; transition: width 0.3s; }
+        
+        .category-badge { font-size: 0.7rem; font-weight: bold; padding: 4px 8px; border-radius: 5px; color: white; }
     </style>
 </head>
 <body>
 
-    <div id="start-screen" class="card">
-        <h1>🚀 Super Quiz</h1>
-        <p class="subtitle">Pon a prueba tu mente en Ciencias e Historia</p>
-        <button class="btn-start" onclick="startQuiz()">¡Empezar ahora!</button>
-        <div class="credits">Elaborado por Javier Martinez 3er Año C</div>
-    </div>
+<div class="card" id="start-screen">
+    <h1>Super Desafío Académico</h1>
+    <p>Pon a prueba tus conocimientos generales.</p>
+    <button class="btn-start" onclick="startQuiz()">Comenzar Reto</button>
+</div>
 
-    <div id="quiz-screen" class="card">
-        <div class="progress-bar"><div id="progress-fill"></div></div>
-        <div id="badge" class="badge">Materia</div>
-        <h2 id="question-text">Pregunta aquí</h2>
-        
-        <div id="answer-area">
-            </div>
+<div class="card" id="quiz-screen">
+    <div id="category-box" class="category-badge"></div>
+    <div class="progress-bar"><div id="progress-fill"></div></div>
+    <h2 id="question-text">Pregunta</h2>
+    <div id="options-container"></div>
+</div>
 
-        <button id="check-btn" onclick="handleAction()">Comprobar</button>
-        <button id="next-btn" style="display:none" onclick="nextQuestion()">Siguiente →</button>
-        
-        <div class="credits">Javier Martinez 3er Año C</div>
-    </div>
-
-    <div id="result-screen" class="card">
-        <h1>¡Terminado!</h1>
-        <p id="final-score" style="font-size: 1.5rem; font-weight: bold;"></p>
-        <button class="btn-start" onclick="location.reload()">Reiniciar</button>
-        <div class="credits">Elaborado por Javier Martinez 3er Año C</div>
-    </div>
+<div class="card" id="result-screen">
+    <h1>Resultados</h1>
+    <p id="score-text"></p>
+    <button class="btn-start" onclick="location.reload()">Reiniciar</button>
+</div>
 
 <script>
     const questions = [
-        // FÍSICA
-        { type: "select", cat: "Física", color: "var(--physics)", q: "¿Cuál es la unidad de fuerza en el S.I.?", options: ["Joule", "Newton", "Watt", "Pascal"], correct: "Newton" },
-        { type: "input", cat: "Física", color: "var(--physics)", q: "Escribe el símbolo químico del Oro:", correct: "Au" },
-        
-        // QUÍMICA
-        { type: "select", cat: "Química", color: "var(--chemistry)", q: "¿Qué pH se considera neutro?", options: ["0", "1", "7", "14"], correct: "7" },
-        { type: "input", cat: "Química", color: "var(--chemistry)", q: "Escribe la fórmula química del Agua:", correct: "H2O" },
-
-        // BIOLOGÍA
-        { type: "select", cat: "Biología", color: "var(--biology)", q: "¿Qué órgano bombea la sangre?", options: ["Cerebro", "Pulmón", "Corazón", "Hígado"], correct: "Corazón" },
-        { type: "input", cat: "Biología", color: "var(--biology)", q: "¿Cómo se llama el pigmento verde de las plantas?", correct: "Clorofila" },
-
-        // GEOGRAFÍA
-        { type: "select", cat: "Geografía", color: "var(--geography)", q: "¿Cuál es el continente más grande?", options: ["América", "África", "Asia", "Europa"], correct: "Asia" },
-        { type: "input", cat: "Geografía", color: "var(--geography)", q: "¿En qué país están las pirámides de Giza?", correct: "Egipto" },
-
-        // HISTORIA
-        { type: "select", cat: "Historia", color: "var(--history)", q: "¿En qué año se descubrió América?", options: ["1492", "1789", "1914", "1500"], correct: "1492" },
-        { type: "input", cat: "Historia", color: "var(--history)", q: "¿Cómo se apellidaba el líder de la Alemania Nazi?", correct: "Hitler" }
+        { q: "¿Cuál es el elemento químico más abundante en el universo?", a: ["Hidrógeno", "Oxígeno", "Helio", "Carbono"], correct: 0, cat: "Química" },        { q: "¿En qué año cayó el Muro de Berlín?", a: ["1987", "1989", "1991", "1985"], correct: 1, cat: "Historia" },
+        { q: "¿Cuál es el río más largo del mundo?", a: ["Nilo", "Amazonas", "Yangtsé", "Misisipi"], correct: 1, cat: "Geografía" },
+        { q: "¿Qué planeta es conocido como el planeta rojo?", a: ["Venus", "Júpiter", "Marte", "Saturno"], correct: 2, cat: "Ciencias" },
+        { q: "¿Quién escribió 'Don Quijote de la Mancha'?", a: ["Lope de Vega", "Cervantes", "Quevedo", "Góngora"], correct: 1, cat: "Literatura" },
+        { q: "¿Cuál es la unidad básica de la vida?", a: ["Átomo", "Célula", "Molécula", "Tejido"], correct: 1, cat: "Biología" }
     ];
 
     let currentIdx = 0;
@@ -197,87 +116,49 @@
 
     function showQuestion() {
         const q = questions[currentIdx];
-        const area = document.getElementById('answer-area');
-        const badge = document.getElementById('badge');
-        
+        document.getElementById('category-box').innerText = q.cat;
+        document.getElementById('category-box').style.backgroundColor = 'var(--' + q.cat.toLowerCase() + ')';
         document.getElementById('question-text').innerText = q.q;
-        document.getElementById('next-btn').style.display = 'none';
-        document.getElementById('check-btn').style.display = 'block';
-        badge.innerText = q.cat;
-        badge.style.background = q.color;
         
-        // Actualizar barra
-        document.getElementById('progress-fill').style.width = ((currentIdx) / questions.length * 100) + "%";
+        const container = document.getElementById('options-container');
+        container.innerHTML = '';
+        
+        q.a.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'btn-option';
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(i);
+            container.appendChild(btn);
+        });
 
-        area.innerHTML = '';
-        if(q.type === "select") {
-            q.options.forEach(opt => {
-                area.innerHTML += `<button class="btn-option" onclick="selectOption(this)">${opt}</button>`;
-            });
-            document.getElementById('check-btn').style.display = 'none'; // Se comprueba al hacer clic en la opción
-        } else {
-            area.innerHTML = `<input type="text" id="user-input" placeholder="Escribe tu respuesta aquí...">`;
-        }
+        document.getElementById('progress-fill').style.width = (currentIdx / questions.length) * 100 + '%';
     }
 
-    function selectOption(btn) {
-        const q = questions[currentIdx];
-        if(btn.innerText === q.correct) {
-            btn.classList.add('correct');
-            score++;
-        } else {
-            btn.classList.add('wrong');
-            // Mostrar la correcta
-            Array.from(document.getElementsByClassName('btn-option')).forEach(b => {
-                if(b.innerText === q.correct) b.classList.add('correct');
-            });
-        }
-        disableOptions();
-        showNext();
-    }
+    function checkAnswer(idx) {
+        const btns = document.querySelectorAll('.btn-option');
+        const correct = questions[currentIdx].correct;
+        
+        btns.forEach((b, i) => {
+            b.disabled = true;
+            if (i === correct) b.classList.add('correct');
+            else if (i === idx) b.classList.add('wrong');
+        });
 
-    function handleAction() {
-        const q = questions[currentIdx];
-        const input = document.getElementById('user-input');
-        if(!input) return;
-
-        const userAns = input.value.trim().toLowerCase();
-        const correctAns = q.correct.toLowerCase();
-
-        if(userAns === correctAns) {
-            input.classList.add('correct');
-            score++;
-        } else {
-            input.classList.add('wrong');
-            input.value = `Error. Era: ${q.correct}`;
-        }
-        input.disabled = true;
-        showNext();
-    }
-
-    function disableOptions() {
-        Array.from(document.getElementsByClassName('btn-option')).forEach(b => b.disabled = true);
-    }
-
-    function showNext() {
-        document.getElementById('check-btn').style.display = 'none';
-        document.getElementById('next-btn').style.display = 'block';
-    }
-
-    function nextQuestion() {
-        currentIdx++;
-        if(currentIdx < questions.length) {
-            showQuestion();
-        } else {
-            showResults();
-        }
+        if (idx === correct) score++;
+        
+        setTimeout(() => {
+            currentIdx++;
+            if (currentIdx < questions.length) showQuestion();
+            else showResults();
+        }, 1500);
     }
 
     function showResults() {
         document.getElementById('quiz-screen').style.display = 'none';
         document.getElementById('result-screen').style.display = 'block';
-        document.getElementById('final-score').innerText = `Puntaje: ${score} de ${questions.length}`;
+        document.getElementById('score-text').innerText = Tu puntuación final es: ${score} de ${questions.length};
     }
 </script>
+
 </body>
 </html>
