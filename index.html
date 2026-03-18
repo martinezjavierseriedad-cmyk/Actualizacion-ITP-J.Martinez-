@@ -7,11 +7,13 @@
     <style>
         :root {
             --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --physics: #f39c12;
-            --chemistry: #e74c3c;
-            --biology: #2ecc71;
-            --geography: #3498db;
-            --history: #9b59b6;
+            /* Variables actualizadas para que coincidan con tus categorías en español (sin tildes) */
+            --quimica: #e74c3c;
+            --historia: #9b59b6;
+            --geografia: #3498db;
+            --ciencias: #f39c12;
+            --literatura: #e67e22;
+            --biologia: #2ecc71;
             --white: #ffffff;
         }
 
@@ -63,16 +65,30 @@
             background: white;
             cursor: pointer;
             transition: 0.2s;
+            font-size: 1rem;
         }
 
-        .btn-option:hover { border-color: #764ba2; background: #f9f9f9; }
+        .btn-option:hover:not(:disabled) { 
+            border-color: #764ba2; 
+            background: #f9f9f9; 
+        }
+        
+        /* Aseguramos que el texto sea legible cuando cambie el fondo */
         .correct { background: #2ecc71 !important; color: white; border-color: #2ecc71 !important; }
         .wrong { background: #e74c3c !important; color: white; border-color: #e74c3c !important; }
 
-        .progress-bar { height: 8px; background: #eee; border-radius: 10px; margin: 20px 0; }
-        #progress-fill { height: 100%; background: #764ba2; width: 0%; transition: width 0.3s; }
+        .progress-bar { height: 8px; background: #eee; border-radius: 10px; margin: 20px 0; overflow: hidden; }
+        #progress-fill { height: 100%; background: #764ba2; width: 0%; transition: width 0.4s ease-out; }
         
-        .category-badge { font-size: 0.7rem; font-weight: bold; padding: 4px 8px; border-radius: 5px; color: white; }
+        .category-badge { 
+            font-size: 0.8rem; 
+            font-weight: bold; 
+            padding: 6px 12px; 
+            border-radius: 20px; 
+            color: white; 
+            display: inline-block;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
@@ -92,13 +108,14 @@
 
 <div class="card" id="result-screen">
     <h1>Resultados</h1>
-    <p id="score-text"></p>
+    <p id="score-text" style="font-size: 1.2rem; font-weight: bold;"></p>
     <button class="btn-start" onclick="location.reload()">Reiniciar</button>
 </div>
 
 <script>
     const questions = [
-        { q: "¿Cuál es el elemento químico más abundante en el universo?", a: ["Hidrógeno", "Oxígeno", "Helio", "Carbono"], correct: 0, cat: "Química" },        { q: "¿En qué año cayó el Muro de Berlín?", a: ["1987", "1989", "1991", "1985"], correct: 1, cat: "Historia" },
+        { q: "¿Cuál es el elemento químico más abundante en el universo?", a: ["Hidrógeno", "Oxígeno", "Helio", "Carbono"], correct: 0, cat: "Química" },
+        { q: "¿En qué año cayó el Muro de Berlín?", a: ["1987", "1989", "1991", "1985"], correct: 1, cat: "Historia" },
         { q: "¿Cuál es el río más largo del mundo?", a: ["Nilo", "Amazonas", "Yangtsé", "Misisipi"], correct: 1, cat: "Geografía" },
         { q: "¿Qué planeta es conocido como el planeta rojo?", a: ["Venus", "Júpiter", "Marte", "Saturno"], correct: 2, cat: "Ciencias" },
         { q: "¿Quién escribió 'Don Quijote de la Mancha'?", a: ["Lope de Vega", "Cervantes", "Quevedo", "Góngora"], correct: 1, cat: "Literatura" },
@@ -116,8 +133,12 @@
 
     function showQuestion() {
         const q = questions[currentIdx];
+        
+        // Formatear el nombre de la categoría para buscar la variable CSS (minúsculas y sin tildes)
+        const cssCategoryName = q.cat.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        
         document.getElementById('category-box').innerText = q.cat;
-        document.getElementById('category-box').style.backgroundColor = 'var(--' + q.cat.toLowerCase() + ')';
+        document.getElementById('category-box').style.backgroundColor = `var(--${cssCategoryName})`;
         document.getElementById('question-text').innerText = q.q;
         
         const container = document.getElementById('options-container');
@@ -131,7 +152,8 @@
             container.appendChild(btn);
         });
 
-        document.getElementById('progress-fill').style.width = (currentIdx / questions.length) * 100 + '%';
+        // La barra de progreso ahora se calcula para mostrar el avance de la pregunta actual
+        document.getElementById('progress-fill').style.width = ((currentIdx + 1) / questions.length) * 100 + '%';
     }
 
     function checkAnswer(idx) {
@@ -139,7 +161,7 @@
         const correct = questions[currentIdx].correct;
         
         btns.forEach((b, i) => {
-            b.disabled = true;
+            b.disabled = true; // Deshabilita los botones para evitar múltiples clics
             if (i === correct) b.classList.add('correct');
             else if (i === idx) b.classList.add('wrong');
         });
@@ -150,13 +172,14 @@
             currentIdx++;
             if (currentIdx < questions.length) showQuestion();
             else showResults();
-        }, 1500);
+        }, 1500); // Mantuve tu retraso de 1.5s para que el usuario vea la respuesta
     }
 
     function showResults() {
         document.getElementById('quiz-screen').style.display = 'none';
         document.getElementById('result-screen').style.display = 'block';
-        document.getElementById('score-text').innerText = Tu puntuación final es: ${score} de ${questions.length};
+        // Aquí estaba el error crítico: se añadieron las comillas invertidas (backticks)
+        document.getElementById('score-text').innerText = `Tu puntuación final es: ${score} de ${questions.length}`;
     }
 </script>
 
