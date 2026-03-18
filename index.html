@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mega Quiz de Ciencias e Historia - Javier Martínez</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --light: #f4f7f6;
+            --text-muted: #7f8c8d;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 15px;
+        }
+
+        #quiz-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .category-badge {
+            background: var(--secondary);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        h2 { color: var(--primary); margin: 20px 0; font-size: 1.25rem; line-height: 1.4; min-height: 3em; display: flex; align-items: center; justify-content: center;}
+
+        .btn-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 10px; }
+
+        .btn {
+            padding: 12px;
+            border: 2px solid #ecf0f1;
+            background: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            color: var(--primary);
+        }
+
+        .btn:hover:not([disabled]) { border-color: var(--secondary); background: #f0f7ff; }
+        .correct { background: var(--success) !important; color: white; border-color: var(--success); }
+        .wrong { background: var(--danger) !important; color: white; border-color: var(--danger); }
+
+        #next-btn {
+            margin-top: 25px;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: none;
+            width: 100%;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .progress-text { margin-bottom: 10px; font-size: 0.8rem; color: var(--text-muted); }
+
+        .credits {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+<div id="quiz-container">
+    <div id="quiz-content">
+        <div class="progress-text" id="progress">Pregunta 1 de 20</div>
+        <span id="category" class="category-badge">Materia</span>
+        <h2 id="question">Cargando...</h2>
+        <div id="answer-buttons" class="btn-grid"></div>
+        <button id="next-btn">Siguiente Pregunta</button>
+    </div>
+    
+    <div class="credits">
+        Elaborado por Javier Martinez 3er Año C
+    </div>
+</div>
+
+<script>
+    const questions = [
+        // --- FÍSICA ---
+        { category: "Física", question: "¿Qué partícula del átomo tiene carga eléctrica negativa?", answers: [{ text: "Protón", correct: false }, { text: "Neutrón", correct: false }, { text: "Electrón", correct: true }, { text: "Positrón", correct: false }] },
+        { category: "Física", question: "¿Cuál es la velocidad de la luz en el vacío aproximadamente?", answers: [{ text: "300,000 km/s", correct: true }, { text: "150,000 km/s", correct: false }, { text: "1,000 km/s", correct: false }, { text: "340 m/s", correct: false }] },
+        { category: "Física", question: "Según la segunda ley de Newton, la fuerza es igual a la masa multiplicada por la...", answers: [{ text: "Velocidad", correct: false }, { text: "Aceleración", correct: true }, { text: "Gravedad", correct: false }, { text: "Energía", correct: false }] },
+        { category: "Física", question: "¿Qué tipo de energía posee un objeto debido a su movimiento?", answers: [{ text: "Potencial", correct: false }, { text: "Cinética", correct: true }, { text: "Térmica", correct: false }, { text: "Química", correct: false }] },
+
+        // --- QUÍMICA ---
+        { category: "Química", question: "¿Cuál es el símbolo químico del Oro?", answers: [{ text: "Ag", correct: false }, { text: "Fe", correct: false }, { text: "Au", correct: true }, { text: "Or", correct: false }] },
+        { category: "Química", question: "¿Cuál es el pH de una sustancia neutra como el agua pura?", answers: [{ text: "0", correct: false }, { text: "14", correct: false }, { text: "7", correct: true }, { text: "1", correct: false }] },
+        { category: "Química", question: "¿Qué gas es esencial para que ocurra la combustión (fuego)?", answers: [{ text: "Nitrógeno", correct: false }, { text: "Hidrógeno", correct: false }, { text: "Oxígeno", correct: true }, { text: "Dióxido de carbono", correct: false }] },
+        { category: "Química", question: "¿Cómo se llaman las filas horizontales en la tabla periódica?", answers: [{ text: "Grupos", correct: false }, { text: "Periodos", correct: true }, { text: "Familias", correct: false }, { text: "Valencias", correct: false }] },
+
+        // --- BIOLOGÍA ---
+        { category: "Biología", question: "¿Qué parte de la célula contiene el material genético (ADN)?", answers: [{ text: "Citoplasma", correct: false }, { text: "Núcleo", correct: true }, { text: "Membrana", correct: false }, { text: "Lisosoma", correct: false }] },
+        { category: "Biología", question: "¿Cómo se llama el proceso por el cual las plantas fabrican su propio alimento?", answers: [{ text: "Respiración", correct: false }, { text: "Fotosíntesis", correct: true }, { text: "Ósmosis", correct: false }, { text: "Mitosis", correct: false }] },
+        { category: "Biología", question: "¿Cuál es el hueso más largo del cuerpo humano?", answers: [{ text: "Húmero", correct: false }, { text: "Radio", correct: false }, { text: "Fémur", correct: true }, { text: "Tibia", correct: false }] },
+        { category: "Biología", question: "¿Cuál es el órgano más grande del cuerpo humano?", answers: [{ text: "Hígado", correct: false }, { text: "Cerebro", correct: false }, { text: "Piel", correct: true }, { text: "Pulmones", correct: false }] },
+
+        // --- GEOGRAFÍA ---
+        { category: "Geografía", question: "¿Cuál es el río más largo y caudaloso del mundo?", answers: [{ text: "Nilo", correct: false }, { text: "Amazonas", correct: true }, { text: "Misisipi", correct: false }, { text: "Yangtsé", correct: false }] },
+        { category: "Geografía", question: "¿En qué continente se encuentra el desierto del Sahara?", answers: [{ text: "Asia", correct: false }, { text: "América", correct: false }, { text: "África", correct: true }, { text: "Oceanía", correct: false }] },
+        { category: "Geografía", question: "¿Cuál es el océano más grande del planeta?", answers: [{ text: "Atlántico", correct: false }, { text: "Índico", correct: false }, { text: "Pacífico", correct: true }, { text: "Ártico", correct: false }] },
+        { category: "Geografía", question: "¿Qué línea imaginaria divide la Tierra en Hemisferio Norte y Sur?", answers: [{ text: "Meridiano de Greenwich", correct: false }, { text: "Trópico de Cáncer", correct: false }, { text: "Ecuador", correct: true }, { text: "Círculo Polar", correct: false }] },
+
+        // --- HISTORIA ---
+        { category: "Historia", question: "¿En qué año llegó Cristóbal Colón a América?", answers: [{ text: "1492", correct: true }, { text: "1500", correct: false }, { text: "1453", correct: false }, { text: "1789", correct: false }] },
+        { category: "Historia", question: "¿En qué país comenzó la Revolución Industrial?", answers: [{ text: "Francia", correct: false }, { text: "Estados Unidos", correct: false }, { text: "Inglaterra", correct: true }, { text: "Alemania", correct: false }] },
+        { category: "Historia", question: "¿Quién fue el principal líder de la Revolución Francesa que instauró el 'Régimen del Terror'?", answers: [{ text: "Napoleón", correct: false }, { text: "Robespierre", correct: true }, { text: "Luis XVI", correct: false }, { text: "Rousseau", correct: false }] },
+        { category: "Historia", question: "¿Qué civilización construyó las pirámides de Giza?", answers: [{ text: "Mayas", correct: false }, { text: "Romanos", correct: false }, { text: "Egipcios", correct: true }, { text: "Griegos", correct: false }] }
+    ];
+
+    const questionElement = document.getElementById('question');
+    const categoryElement = document.getElementById('category');
+    const answerButtonsElement = document.getElementById('answer-buttons');
+    const nextButton = document.getElementById('next-btn');
+    const progressElement = document.getElementById('progress');
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        showQuestion();
+    }
+
+    function showQuestion() {
+        resetState();
+        let q = questions[currentQuestionIndex];
+        progressElement.innerText = `Pregunta ${currentQuestionIndex + 1} de ${questions.length}`;
+        categoryElement.innerText = q.category;
+        questionElement.innerText = q.question;
+
+        q.answers.sort(() => Math.random() - 0.5).forEach(answer => {
+            const button = document.createElement('button');
+            button.innerText = answer.text;
+            button.classList.add('btn');
+            if (answer.correct) button.dataset.correct = "true";
+            button.addEventListener('click', selectAnswer);
+            answerButtonsElement.appendChild(button);
+        });
+    }
+
+    function resetState() {
+        nextButton.style.display = 'none';
+        while (answerButtonsElement.firstChild) {
+            answerButtonsElement.removeChild(answerButtonsElement.firstChild);
+        }
+    }
+
+    function selectAnswer(e) {
+        const selectedBtn = e.target;
+        const isCorrect = selectedBtn.dataset.correct === "true";
+        if (isCorrect) {
+            selectedBtn.classList.add('correct');
+            score++;
+        } else {
+            selectedBtn.classList.add('wrong');
+        }
+        Array.from(answerButtonsElement.children).forEach(button => {
+            if (button.dataset.correct === "true") button.classList.add('correct');
+            button.disabled = true;
+        });
+        nextButton.style.display = 'block';
+    }
+
+    nextButton.addEventListener('click', () => {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questions.length) {
+            showQuestion();
+        } else {
+            showScore();
+        }
+    });
+
+    function showScore() {
+        resetState();
+        progressElement.innerText = "¡Cuestionario finalizado!";
+        categoryElement.style.display = "none";
+        let mensaje = score > 15 ? "¡Excelente trabajo!" : "¡Buen intento!";
+        questionElement.innerHTML = `<div>${mensaje}</div>Obtuviste ${score} de ${questions.length} puntos.`;
+        nextButton.innerText = "Reiniciar Cuestionario";
+        nextButton.style.display = "block";
+        nextButton.onclick = () => location.reload();
+    }
+
+    startQuiz();
+</script>
+
+</body>
+</html>
+
